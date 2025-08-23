@@ -4,7 +4,6 @@ using FusionCacheApplication.Domain.Models;
 using FusionCacheApplication.Dtos;
 using FusionCacheApplication.Infrastructure.Database;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 
 namespace FusionCacheApplication;
@@ -75,23 +74,29 @@ public class Program
 
     private static void ConfigureUserController(WebApplication app)
     {
-        app.MapGet("/users/{id:guid}", async (Guid id, IUserRepository repo, AppDbContext db, CancellationToken ct) =>
+        app.MapGet("/users/{id:guid}", async (Guid id, IUserService service, AppDbContext db, CancellationToken ct) =>
         {
-            var user = await repo.GetByIdAsync(id, ct);
+            var user = await service.GetByIdAsync(id, ct);
             return user is null ? Results.NotFound() : Results.Ok(user);
         });
 
-        app.MapPost("/users", async ([FromBody] UpsertUserDto dto, IUserRepository repo, CancellationToken ct) =>
+        app.MapPost("/users", async ([FromBody] UpsertUserDto dto, IUserService service, CancellationToken ct) =>
         {
             var user = new User(dto.Username, dto.Email, dto.Id);
-            await repo.UpsertAsync(user, ct);
+            await service.UpsertAsync(user, ct);
             return Results.Created($"/users/{dto.Id}", dto);
         });
 
-        app.MapDelete("/users/{id:guid}", async (Guid id, IUserRepository repo, CancellationToken ct) =>
+        app.MapDelete("/users/{id:guid}", async (Guid id, IUserService service, CancellationToken ct) =>
         {
-            await repo.RemoveAsync(id, ct);
+            await service.RemoveAsync(id, ct);
             return Results.NoContent();
+        });
+
+        app.MapGet("/users/invalidate-all-cache", async (IUserService service, CancellationToken ct) =>
+        {
+            await service.InvalidateCacheForUsersAsync(ct);
+            return Results.Accepted();
         });
     }
 

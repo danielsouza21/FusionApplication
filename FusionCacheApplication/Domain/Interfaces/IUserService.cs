@@ -8,5 +8,6 @@ namespace FusionCacheApplication.Domain.Interfaces
         Task<User?> GetByEmailAsync(string email, CancellationToken ct = default);
         Task UpsertAsync(User user, CancellationToken ct = default);
         Task RemoveAsync(Guid id, CancellationToken ct = default);
+        Task InvalidateCacheForUsersAsync(CancellationToken ct = default);
     }
 }

@@ -5,8 +5,6 @@ using FusionCacheApplication.Infrastructure.Database;
 using FusionCacheApplication.Infrastructure.Database.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Hosting;
-using StackExchange.Redis;
 using ZiggyCreatures.Caching.Fusion;
 using ZiggyCreatures.Caching.Fusion.Backplane.StackExchangeRedis;
 using ZiggyCreatures.Caching.Fusion.Serialization.SystemTextJson;

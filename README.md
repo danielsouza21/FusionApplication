@@ -2,6 +2,37 @@
 
 A comprehensive .NET application demonstrating advanced caching patterns using [FusionCache](https://github.com/ZiggyCreatures/FusionCache/tree/main) with Microsoft Aspire for distributed system orchestration.
 
+## 🧪 Testing Strategy
+
+### **System Testing Approach**
+This project includes a comprehensive system testing strategy to validate FusionCache functionality in real-world scenarios:
+
+#### **Dedicated Test Project**
+- **FusionCacheApplication.SystemTests**: A separate project containing extensive integration tests
+- **Real Infrastructure Testing**: Tests run against actual PostgreSQL and Redis instances
+- **Multi-Instance Validation**: Tests distributed caching across multiple application instances
+- **Performance Benchmarking**: Measure cache hit/miss ratios and response times
+
+#### **Test Scenarios**
+- **Cache Hit/Miss Validation**: Verify data is served from cache vs database
+- **Distributed Cache Synchronization**: Test backplane functionality across instances
+- **Fail-Safe Mechanisms**: Simulate database failures and validate cache fallback
+- **Timeout Handling**: Test soft/hard timeout configurations
+- **Cache Stampede Prevention**: Validate concurrent request handling
+- **Cache Invalidation**: Test cache clearing and refresh mechanisms
+
+#### **Instance Management**
+- **Custom Instance Names**: Define specific instance identifiers for targeted testing
+- **Load Balancing Tests**: Validate distribution across multiple replicas
+- **Service Discovery**: Test inter-service communication and discovery
+- **Health Check Validation**: Ensure all instances report correct status
+
+#### **Monitoring & Validation**
+- **Real-time Log Analysis**: Monitor cache and database access patterns
+- **Performance Metrics**: Track response times and throughput
+- **Error Simulation**: Test resilience under various failure conditions
+- **Data Consistency**: Validate cache and database synchronization
+
 ## 🎯 Project Overview
 
 This project showcases FusionCache, an easy-to-use, fast, and robust hybrid cache with advanced resiliency features. FusionCache is a production-ready caching solution that has been downloaded over 15 million times and is used by Microsoft in products like Data API Builder.
@@ -112,23 +143,6 @@ The following FusionCache features will be implemented and studied:
 ### **Connection Strings**
 - **Database**: `fusionApplicationDb` (PostgreSQL)
 - **Redis**: `redisBackplaneFusion` (Cache backplane)
-
-## 🧪 Testing Features
-
-### **Cache Testing**
-- Test cache hit/miss scenarios
-- Verify distributed cache synchronization
-- Monitor cache performance metrics
-
-### **Chaos Engineering**
-- Simulate database failures
-- Test fail-safe mechanisms
-- Measure timeout handling
-
-### **Load Testing**
-- Multiple application instances
-- Load balancing verification
-- Performance under stress
 
 ## 📊 Monitoring
 
