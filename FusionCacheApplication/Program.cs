@@ -8,6 +8,10 @@ using System.Text.Json.Serialization;
 
 namespace FusionCacheApplication;
 
+//TODO:
+//  - Create DistributedErrorSettings and service for chaos
+//  - Create CacheService to centralize all configs and chaos behaviour
+
 public class Program
 {
     public static async Task Main(string[] args)
