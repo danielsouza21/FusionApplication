@@ -82,5 +82,21 @@ namespace FusionCacheApplication.Configuration
             services.AddSingleton<ChaosSettings>();
             return services;
         }
+
+        public static async Task ApplyDatabaseMigrationsAsync(this WebApplication app)
+        {
+            using var scope = app.Services.CreateScope();
+            var migrationService = scope.ServiceProvider.GetRequiredService<IDatabaseMigrationService>();
+
+            try
+            {
+                await migrationService.MigrateAsync();
+                Console.WriteLine("Database migration completed successfully.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error applying database migration: {ex.Message}");
+            }
+        }
     }
 }

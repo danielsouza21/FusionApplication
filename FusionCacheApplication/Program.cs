@@ -16,13 +16,10 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
         builder.AddServiceDefaults();
 
-        // Add services to the container.
-
         builder.Services.AddControllers();
-        // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+
         builder.Services.AddOpenApi();
 
-        // Add these lines for complete Swagger configuration
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(c =>
         {
@@ -47,31 +44,13 @@ public class Program
 
         var app = builder.Build();
 
-        // Apply database migrations using our custom service
-        using (var scope = app.Services.CreateScope())
-        {
-            var migrationService = scope.ServiceProvider.GetRequiredService<IDatabaseMigrationService>();
-            
-            try
-            {
-                await migrationService.MigrateAsync();
-                Console.WriteLine("Database migration completed successfully.");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error applying database migration: {ex.Message}");
-                // You might want to throw here depending on your requirements
-            }
-        }
-
+        await app.ApplyDatabaseMigrationsAsync();
 
         app.MapDefaultEndpoints();
 
-        // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
             app.MapOpenApi();
-            // Add this line to enable Swagger UI
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
