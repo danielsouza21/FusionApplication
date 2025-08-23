@@ -106,9 +106,30 @@ public class Program
 
     private static void ConfigureAdminController(WebApplication app)
     {
-        app.MapGet("/admin/db/chaos", (ChaosSettings chaos) => chaos);
+        app.MapGet("/admin/chaos/chaos", async (IDistributedErrorSimulationService errorService, CancellationToken ct) =>
+        {
+            return await errorService.GetSettingsAsync(ct);
+        });
 
-        app.MapPost("/admin/db/fail", (bool on, ChaosSettings chaos) => { chaos.Fail = on; return Results.Ok(new { chaos.Fail }); });
-        app.MapPost("/admin/db/slow", (int ms, ChaosSettings chaos) => { chaos.SlowMs = ms; return Results.Ok(new { chaos.SlowMs }); });
+        app.MapPost("/admin/chaos/fail", async (bool on, [FromServices] IDistributedErrorSimulationService errorService, CancellationToken ct) =>
+        {
+            await errorService.SetFailAsync(on, "admin-api", ct);
+            var settings = await errorService.GetSettingsAsync(ct);
+            return Results.Ok(new { settings.Fail, settings.LastUpdated, settings.UpdatedBy, settings.InstanceId });
+        });
+
+        app.MapPost("/admin/chaos/slow", async (int ms, [FromServices] IDistributedErrorSimulationService errorService, CancellationToken ct) =>
+        {
+            await errorService.SetSlowAsync(ms, "admin-api", ct);
+            var settings = await errorService.GetSettingsAsync(ct);
+            return Results.Ok(new { settings.SlowMs, settings.LastUpdated, settings.UpdatedBy, settings.InstanceId });
+        });
+
+        app.MapPost("/admin/chaos/reset", async ([FromServices] IDistributedErrorSimulationService errorService, CancellationToken ct) =>
+        {
+            await errorService.ResetAsync("admin-api", ct);
+            var settings = await errorService.GetSettingsAsync(ct);
+            return Results.Ok(new { message = "Settings reset", settings });
+        });
     }
 }

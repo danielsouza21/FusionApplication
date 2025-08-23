@@ -77,7 +77,7 @@ namespace FusionCacheApplication.Configuration
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddScoped<IUserService, UserService>();
-            services.AddSingleton<ChaosSettings>();
+            services.AddScoped<IDistributedErrorSimulationService, DistributedErrorSimulationService>();
             return services;
         }
 
