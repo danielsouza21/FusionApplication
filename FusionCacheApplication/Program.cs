@@ -9,8 +9,16 @@ using System.Text.Json.Serialization;
 namespace FusionCacheApplication;
 
 //TODO:
-//  - Create DistributedErrorSettings and service for chaos
-//  - Create CacheService to centralize all configs and chaos behaviour
+//  - Test Chaos feature
+//  - Enable L2 (redis) and test
+//  - Find a way to see redis (dashboard admin...)
+//  - Find a way to change instances or/and get ports of each one (maybe forcing config port number by instance on Aspire)
+//  - Add a feature to receive a value on header which may disable cache invalidation on updates (create/update/delete)
+//  - Improve FusionCache config to leave almost all configs to appsettings
+//  - Implement first system test to validate feature L1 + L2
+
+//  - Update README with flows diagrams
+//  - Add app loadbalancing url + each instance url to README
 
 public class Program
 {
@@ -106,7 +114,7 @@ public class Program
 
     private static void ConfigureAdminController(WebApplication app)
     {
-        app.MapGet("/admin/chaos/chaos", async (IDistributedErrorSimulationService errorService, CancellationToken ct) =>
+        app.MapGet("/admin/chaos", async (IDistributedErrorSimulationService errorService, CancellationToken ct) =>
         {
             return await errorService.GetSettingsAsync(ct);
         });
