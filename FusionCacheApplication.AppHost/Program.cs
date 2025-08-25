@@ -12,7 +12,7 @@ var postgres = builder
 
 var postgresdb = postgres.AddDatabase("fusionApplicationDb");
 
-var redisCache = builder.AddRedis("redisBackplaneFusion");
+var redisCache = builder.AddRedis("redisBackplaneFusion", 6379);
 
 builder.AddProject<Projects.FusionCacheApplication>("fusioncacheapplication")
     .WithReference(postgresdb)

@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>30b88924-28d7-459f-a0ee-32716899697d</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -36,7 +37,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Infrastructure.Caching\" />
     <Folder Include="Infrastructure.Database\Migrations\" />
   </ItemGroup>
 

@@ -5,6 +5,7 @@ using FusionCacheApplication.Infrastructure.Database;
 using FusionCacheApplication.Infrastructure.Database.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
 using ZiggyCreatures.Caching.Fusion;
 using ZiggyCreatures.Caching.Fusion.Backplane.StackExchangeRedis;
 using ZiggyCreatures.Caching.Fusion.Serialization.SystemTextJson;
@@ -19,27 +20,40 @@ namespace FusionCacheApplication.Configuration
                 .GetSection(ConfigurationConstants.CONFIG_SECTION_FUSION)
                 .Get<FusionCacheConfiguration>();
 
+            fusionConfigSection ??= new FusionCacheConfiguration();
+
+            var logger = services.BuildServiceProvider().GetService<ILogger<FusionCacheConfiguration>>();
+
             var fusionCacheBuilder = services
                 .AddFusionCache()
                 .WithDefaultEntryOptions(new FusionCacheEntryOptions
                 {
-                    Duration = TimeSpan.FromMinutes(2),
-                    JitterMaxDuration = TimeSpan.FromSeconds(20),
-                    IsFailSafeEnabled = true,
-                    FailSafeMaxDuration = TimeSpan.FromHours(1),
-                    FactorySoftTimeout = TimeSpan.FromMilliseconds(150),
-                    FactoryHardTimeout = TimeSpan.FromSeconds(2),
-                    EagerRefreshThreshold = (float)0.15
+                    Duration = fusionConfigSection.DefaultDuration,
+                    JitterMaxDuration = fusionConfigSection.DefaultJitterMaxDuration,
+                    IsFailSafeEnabled = fusionConfigSection.DefaultFailSafeEnabled,
+                    FailSafeMaxDuration = fusionConfigSection.DefaultFailSafeMaxDuration,
+                    FactorySoftTimeout = fusionConfigSection.DefaultFactorySoftTimeout,
+                    FactoryHardTimeout = fusionConfigSection.DefaultFactoryHardTimeout,
+                    EagerRefreshThreshold = fusionConfigSection.DefaultEagerRefreshThreshold,
+                    Priority = fusionConfigSection.DefaultPriorityEnum,
                 });
 
             var redisConnectionString = configurationManager.GetConnectionString(ConfigurationConstants.REDIS_FUSION_CONNECTION_NAME);
 
-            if (fusionConfigSection?.UseBackplaneDistributed ?? false && redisConnectionString is not null)
+            if (fusionConfigSection.UseBackplaneDistributed && redisConnectionString is not null)
             {
+                logger?.LogInformation("🔗 FUSION CACHE: Enabling Redis backplane with connection string");
+                
                 fusionCacheBuilder
                     .WithDistributedCache(sp => sp.GetRequiredService<IDistributedCache>())
-                    .WithSerializer(new FusionCacheSystemTextJsonSerializer())
                     .WithBackplane(_ => new RedisBackplane(new RedisBackplaneOptions { Configuration = redisConnectionString }));
+
+                if (fusionConfigSection.SetSystemTextJsonSerializer)
+                    fusionCacheBuilder.WithSerializer(new FusionCacheSystemTextJsonSerializer());
+            }
+            else
+            {
+                logger?.LogInformation("🔗 FUSION CACHE: Using local cache only (no backplane)");
             }
 
             return services;
