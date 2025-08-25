@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace FusionCacheApplication.Domain.Models;
 
@@ -9,6 +10,16 @@ public sealed class User
     public string Username { get; private set; }
     public string Email { get; private set; }
     public DateTimeOffset UpdatedAt { get; private set; } = DateTimeOffset.UtcNow;
+
+    // JSON constructor for deserialization
+    [JsonConstructor]
+    public User(Guid id, string username, string email, DateTimeOffset updatedAt)
+    {
+        Id = id;
+        Username = username;
+        Email = email;
+        UpdatedAt = updatedAt;
+    }
 
     private User() { } // EF
 

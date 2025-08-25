@@ -44,10 +44,12 @@ namespace FusionCacheApplication.Configuration
             if (fusionConfigSection.UseBackplaneDistributed && redisConnectionString is not null)
             {
                 logger?.LogInformation("🔗 FUSION CACHE: Enabling Redis backplane with connection string");
-                
+
+                var loggerRedisBackplane = services.BuildServiceProvider().GetService<ILogger<RedisBackplane>>();
+
                 fusionCacheBuilder
                     .WithDistributedCache(sp => sp.GetRequiredService<IDistributedCache>())
-                    .WithBackplane(_ => new RedisBackplane(new RedisBackplaneOptions { Configuration = redisConnectionString }));
+                    .WithBackplane(_ => new RedisBackplane(new RedisBackplaneOptions { Configuration = redisConnectionString }, loggerRedisBackplane));
 
                 if (fusionConfigSection.SetSystemTextJsonSerializer)
                     fusionCacheBuilder.WithSerializer(new FusionCacheSystemTextJsonSerializer());
