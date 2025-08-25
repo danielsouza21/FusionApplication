@@ -27,7 +27,7 @@ namespace FusionCacheApplication.Configuration
         public int DefaultFactoryHardTimeoutMilliseconds { get; set; } = 0;
         
         // Eager Refresh Settings
-        public float DefaultEagerRefreshThreshold { get; set; } = 0.15f;
+        public float DefaultEagerRefreshThreshold { get; set; } = 0.9f;
         
         // Priority Settings
         public string DefaultPriority { get; set; } = "Normal"; // Low, Normal, High, NeverRemove

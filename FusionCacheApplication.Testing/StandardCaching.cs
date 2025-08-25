@@ -8,11 +8,16 @@ Testing approachs:
 
     2. 
 */
-public class UnitTest1
+public class StandardCaching
 {
-    [Fact]
-    public void Test1()
-    {
+    public const string APP_INSTANCE_1_URL = "";
+    public const string APP_INSTANCE_2_URL = "";
 
+    public const string REDIS_PASSWORD = "";
+
+    [Fact]
+    public void StandardCaching_GivenRetriveUser_ShouldCacheL1andL2_MultipleInstances()
+    {
+        
     }
 }

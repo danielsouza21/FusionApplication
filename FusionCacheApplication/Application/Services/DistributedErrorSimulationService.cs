@@ -28,7 +28,10 @@ public class DistributedErrorSimulationService(IFusionCache cache, ILogger<Distr
                 _logger.LogInformation("🔄 ERROR SIMULATION: Settings not in cache, creating default");
                 return new DistributedErrorSettings();
             },
-            opts => opts.SetDuration(TimeSpan.FromMinutes(DURATION_CACHE_MINUTES)),
+            opts =>
+                opts
+                .SetDuration(TimeSpan.FromMinutes(DURATION_CACHE_MINUTES))
+                .SetEagerRefresh(null),
             tags: [ErrorSettingsTag],
             token: ct);
 
@@ -51,7 +54,10 @@ public class DistributedErrorSimulationService(IFusionCache cache, ILogger<Distr
         await _cache.SetAsync(
             ErrorSettingsKey,
             settings,
-            opts => opts.SetDuration(TimeSpan.FromMinutes(DURATION_CACHE_MINUTES)),
+            opts => 
+                opts
+                .SetDuration(TimeSpan.FromMinutes(DURATION_CACHE_MINUTES))
+                .SetEagerRefresh(null),
             tags: [ErrorSettingsTag],
             token: ct);
 
@@ -72,7 +78,10 @@ public class DistributedErrorSimulationService(IFusionCache cache, ILogger<Distr
         await _cache.SetAsync(
             ErrorSettingsKey,
             settings,
-            opts => opts.SetDuration(TimeSpan.FromMinutes(DURATION_CACHE_MINUTES)),
+            opts =>
+                opts
+                .SetDuration(TimeSpan.FromMinutes(DURATION_CACHE_MINUTES))
+                .SetEagerRefresh(null),
             tags: [ErrorSettingsTag],
             token: ct);
 
@@ -94,7 +103,10 @@ public class DistributedErrorSimulationService(IFusionCache cache, ILogger<Distr
         await _cache.SetAsync(
             ErrorSettingsKey,
             settings,
-            opts => opts.SetDuration(TimeSpan.FromMinutes(DURATION_CACHE_MINUTES)),
+            opts =>
+                opts
+                .SetDuration(TimeSpan.FromMinutes(DURATION_CACHE_MINUTES))
+                .SetEagerRefresh(null),
             tags: [ErrorSettingsTag],
             token: ct);
 

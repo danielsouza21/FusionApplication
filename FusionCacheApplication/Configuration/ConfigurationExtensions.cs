@@ -5,6 +5,7 @@ using FusionCacheApplication.Infrastructure.Database;
 using FusionCacheApplication.Infrastructure.Database.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using ZiggyCreatures.Caching.Fusion;
 using ZiggyCreatures.Caching.Fusion.Backplane.StackExchangeRedis;
@@ -62,6 +63,13 @@ namespace FusionCacheApplication.Configuration
         public static WebApplicationBuilder AddRedisWithAspire(this WebApplicationBuilder builder)
         {
             builder.AddRedisClient(connectionName: ConfigurationConstants.REDIS_FUSION_CONNECTION_NAME);
+
+            var redisConnectionString = builder.Configuration.GetConnectionString(ConfigurationConstants.REDIS_FUSION_CONNECTION_NAME);
+            builder.Services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = redisConnectionString;
+            });
+
             return builder;
         }
 

@@ -12,7 +12,8 @@ var postgres = builder
 
 var postgresdb = postgres.AddDatabase("fusionApplicationDb");
 
-var redisCache = builder.AddRedis("redisBackplaneFusion", 6379);
+var redisPassword = builder.AddParameter("redisPassword", "secretPasswordRedis", secret: false);
+var redisCache = builder.AddRedis("redisBackplaneFusion", 6379, redisPassword);
 
 builder.AddProject<Projects.FusionCacheApplication>("fusioncacheapplication")
     .WithReference(postgresdb)
