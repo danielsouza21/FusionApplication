@@ -1,12 +1,10 @@
 ﻿using FusionCacheApplication.Application.Services;
 using FusionCacheApplication.Domain.Interfaces;
-using FusionCacheApplication.Domain.Models;
 using FusionCacheApplication.Infrastructure.Database;
 using FusionCacheApplication.Infrastructure.Database.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Caching.Memory;
 using ZiggyCreatures.Caching.Fusion;
 using ZiggyCreatures.Caching.Fusion.Backplane.StackExchangeRedis;
 using ZiggyCreatures.Caching.Fusion.Serialization.SystemTextJson;
@@ -25,8 +23,15 @@ namespace FusionCacheApplication.Configuration
 
             var logger = services.BuildServiceProvider().GetService<ILogger<FusionCacheConfiguration>>();
 
+            var instanceId = Environment.GetEnvironmentVariable("INSTANCE_ID") ??
+                    Environment.MachineName ??
+                    Guid.NewGuid().ToString("N")[..8];
+
+            var cacheName = $"FusionCache_{instanceId}";
+
             var fusionCacheBuilder = services
                 .AddFusionCache()
+                .WithOptions(opt => opt.CacheName = cacheName)
                 .WithDefaultEntryOptions(new FusionCacheEntryOptions
                 {
                     Duration = fusionConfigSection.DefaultDuration,

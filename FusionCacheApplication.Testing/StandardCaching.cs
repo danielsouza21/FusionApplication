@@ -20,8 +20,8 @@ public class StandardCaching
 
     private static readonly HttpClient _httpClient = new();
 
-    private const string APP_INSTANCE_1_URL = "https://localhost:63322"; //It has to be set based on the individual ports of each instance (not the LB)
-    private const string APP_INSTANCE_2_URL = "https://localhost:63327";
+    private const string APP_INSTANCE_1_URL = "https://localhost:57098"; //It has to be set based on the individual ports of each instance (not the LB)
+    private const string APP_INSTANCE_2_URL = "https://localhost:57096";
 
     private const string REDDIS_CONNECTION_STRING = "localhost:6379,password=secretPasswordRedis";
 
@@ -36,7 +36,13 @@ public class StandardCaching
 
         // Test user data
         var testUserId = Guid.NewGuid();
-        var testUser = new UpsertUserDto(testUserId, $"testuser_{testUserId}", $"test_{testUserId}@example.com");
+        var miniGuid = testUserId.ToString("N")[..8];
+
+        var testUser = new UpsertUserDto(
+            testUserId, 
+            $"testuser_{miniGuid}", 
+            $"test_{miniGuid}@example.com");
+
         var cacheKey = $"user:id:{testUserId}";
 
         try

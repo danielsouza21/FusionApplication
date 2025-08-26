@@ -3,16 +3,28 @@ using FusionCacheApplication.Domain.Interfaces;
 using FusionCacheApplication.Domain.Models;
 using System.Diagnostics;
 using ZiggyCreatures.Caching.Fusion;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FusionCacheApplication.Application.Services;
 
-public class UserService(IFusionCache cache, IUserRepository inner, IDistributedErrorSimulationService errorService, ILogger<UserService> logger) : IUserService
+public class UserService : IUserService
 {
-    private readonly IFusionCache _cache = cache;
-    private readonly IUserRepository _userRepository = inner;
-    private readonly IDistributedErrorSimulationService _errorService = errorService;
+    private readonly IFusionCache _cache;
+    private readonly IUserRepository _userRepository;
+    private readonly IDistributedErrorSimulationService _errorService;
+    private readonly ILogger<UserService> _logger;
 
-    private readonly ILogger<UserService> _logger = logger;
+    public UserService(
+        IFusionCache cache,
+        IUserRepository inner,
+        IDistributedErrorSimulationService errorService,
+        ILogger<UserService> logger)
+    {
+        _cache = cache;
+        _userRepository = inner;
+        _errorService = errorService;
+        _logger = logger;
+    }
 
     private const string UsersTag = "users";
     private static string KeyById(Guid id) => $"user:id:{id}";

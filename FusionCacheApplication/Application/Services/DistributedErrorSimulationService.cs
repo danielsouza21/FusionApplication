@@ -2,15 +2,24 @@
 using FusionCacheApplication.Domain.Models;
 using System.Diagnostics;
 using ZiggyCreatures.Caching.Fusion;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FusionCacheApplication.Application.Services;
 
-public class DistributedErrorSimulationService(IFusionCache cache, ILogger<DistributedErrorSimulationService> logger) : IDistributedErrorSimulationService
+public class DistributedErrorSimulationService : IDistributedErrorSimulationService
 {
-    private readonly IFusionCache _cache = cache;
-    private readonly ILogger<DistributedErrorSimulationService> _logger = logger;
+    private readonly IFusionCache _cache;
+    private readonly ILogger<DistributedErrorSimulationService> _logger;
 
-    private readonly string _instanceId = Environment.GetEnvironmentVariable("INSTANCE_ID") ?? 
+    public DistributedErrorSimulationService(
+        IFusionCache cache,
+        ILogger<DistributedErrorSimulationService> logger)
+    {
+        _cache = cache;
+        _logger = logger;
+    }
+
+    private readonly string _instanceId = Environment.GetEnvironmentVariable("INSTANCE_ID") ??
         Environment.MachineName;
 
     private const string ErrorSettingsKey = "distributed:error:settings";
@@ -54,7 +63,7 @@ public class DistributedErrorSimulationService(IFusionCache cache, ILogger<Distr
         await _cache.SetAsync(
             ErrorSettingsKey,
             settings,
-            opts => 
+            opts =>
                 opts
                 .SetDuration(TimeSpan.FromMinutes(DURATION_CACHE_MINUTES))
                 .SetEagerRefresh(null),
